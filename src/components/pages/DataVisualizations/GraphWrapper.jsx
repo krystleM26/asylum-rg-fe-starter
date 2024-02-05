@@ -10,11 +10,34 @@ import YearLimitsSelect from './YearLimitsSelect';
 import ViewSelect from './ViewSelect';
 import axios from 'axios';
 import { resetVisualizationQuery } from '../../../state/actionCreators';
-import test_data from '../../../data/test_data.json';
+// import test_data from '../../../data/test_data.json';
 import { colors } from '../../../styles/data_vis_colors';
 import ScrollToTopOnMount from '../../../utils/scrollToTopOnMount';
 
 const { background_color } = colors;
+
+var result_api_data;
+
+axios
+  .get('https://hrf-asylum-be-b.herokuapp.com/cases/fiscalSummary')
+  .then(function (response) {
+    result_api_data = response.data;
+    console.log('fiscalSummary', response.data);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+
+axios
+  .get('https://hrf-asylum-be-b.herokuapp.com/cases/citizenshipSummary')
+  .then(function (response) {
+    console.log('citizenship', response.data);
+    result_api_data[0]['citizenshipResults'] = response.data;
+  })
+  .catch(function (error) {
+    console.log('fiscal error', error);
+    console.log('erroro');
+  });
 
 function GraphWrapper(props) {
   const { set_view, dispatch } = props;
@@ -83,7 +106,7 @@ function GraphWrapper(props) {
           },
         })
         .then(result => {
-          stateSettingCallback(view, office, test_data); // <-- `test_data` here can be simply replaced by `result.data` in prod!
+          stateSettingCallback(view, office, result_api_data); // <-- `result_api_data` here can be simply replaced by `result.data` in prod!
         })
         .catch(err => {
           console.error(err);
@@ -99,7 +122,7 @@ function GraphWrapper(props) {
           },
         })
         .then(result => {
-          stateSettingCallback(view, office, test_data); // <-- `test_data` here can be simply replaced by `result.data` in prod!
+          stateSettingCallback(view, office, result_api_data); // <-- `test_data` here can be simply replaced by `result.data` in prod!
         })
         .catch(err => {
           console.error(err);
