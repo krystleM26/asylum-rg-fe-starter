@@ -16,28 +16,26 @@ import ScrollToTopOnMount from '../../../utils/scrollToTopOnMount';
 
 const { background_color } = colors;
 
-var result_api_data;
+// axios
+//   .get('https://hrf-asylum-be-b.herokuapp.com/cases/fiscalSummary')
+//   .then(function (response) {
+//     data_result = response.data;
+//     console.log('fiscalSummary', response.data);
+//   })
+//   .catch(function (error) {
+//     console.log(error);
+//   });
 
-axios
-  .get('https://hrf-asylum-be-b.herokuapp.com/cases/fiscalSummary')
-  .then(function (response) {
-    result_api_data = response.data;
-    console.log('fiscalSummary', response.data);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-
-axios
-  .get('https://hrf-asylum-be-b.herokuapp.com/cases/citizenshipSummary')
-  .then(function (response) {
-    console.log('citizenship', response.data);
-    result_api_data[0]['citizenshipResults'] = response.data;
-  })
-  .catch(function (error) {
-    console.log('fiscal error', error);
-    console.log('erroro');
-  });
+// axios
+//   .get('https://hrf-asylum-be-b.herokuapp.com/cases/citizenshipSummary')
+//   .then(function (response) {
+//     console.log('citizenship', response.data);
+//     data_result[0] = response.data;
+//   })
+//   .catch(function (error) {
+//     console.log('citizenship error', error);
+//     console.log('error');
+//   });
 
 function GraphWrapper(props) {
   const { set_view, dispatch } = props;
@@ -74,6 +72,7 @@ function GraphWrapper(props) {
     }
   }
   function updateStateWithNewData(years, view, office, stateSettingCallback) {
+    console.log('hello');
     /*
           _                                                                             _
         |                                                                                 |
@@ -98,7 +97,7 @@ function GraphWrapper(props) {
 
     if (office === 'all' || !office) {
       axios
-        .get(process.env.REACT_APP_API_URI, {
+        .get('https://hrf-asylum-be-b.herokuapp.com/cases/fiscalSummary', {
           // mock URL, can be simply replaced by `${Real_Production_URL}/summary` in prod!
           params: {
             from: years[0],
@@ -106,14 +105,14 @@ function GraphWrapper(props) {
           },
         })
         .then(result => {
-          stateSettingCallback(view, office, result_api_data); // <-- `result_api_data` here can be simply replaced by `result.data` in prod!
+          stateSettingCallback(view, office, result.data); // <-- `result` here can be simply replaced by `result.data` in prod!
         })
         .catch(err => {
           console.error(err);
         });
     } else {
       axios
-        .get(process.env.REACT_APP_API_URI, {
+        .get('https://hrf-asylum-be-b.herokuapp.com/cases/citizenshipSummary', {
           // mock URL, can be simply replaced by `${Real_Production_URL}/summary` in prod!
           params: {
             from: years[0],
@@ -122,7 +121,7 @@ function GraphWrapper(props) {
           },
         })
         .then(result => {
-          stateSettingCallback(view, office, result_api_data); // <-- `test_data` here can be simply replaced by `result.data` in prod!
+          stateSettingCallback(view, office, result.data); // <-- `result` here can be simply replaced by `result.data` in prod!
         })
         .catch(err => {
           console.error(err);
